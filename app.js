@@ -1,4 +1,4 @@
-// Clase Producto
+
 class Producto {
     constructor(id, nombre, precio, stock, categoria) {
         this.id = id;
@@ -9,7 +9,7 @@ class Producto {
     }
 }
 
-// Variables globales y selección de elementos del DOM
+
 let productos = JSON.parse(localStorage.getItem('neostore_productos')) || [];
 
 const form = document.getElementById('producto-form');
@@ -21,7 +21,7 @@ const selectCategoria = document.getElementById('categoria');
 const btnGuardar = document.getElementById('btn-guardar');
 const listaProductos = document.getElementById('lista-productos');
 
-// Renderizar la lista de productos en la tabla
+
 function renderizarProductos() {
     listaProductos.innerHTML = '';
 
@@ -51,7 +51,7 @@ function renderizarProductos() {
     });
 }
 
-// Guardar o Actualizar producto
+
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -62,14 +62,14 @@ form.addEventListener('submit', (e) => {
     const categoria = selectCategoria.value;
 
     if (id) {
-        // Modo Edición
+        
         const index = productos.findIndex(p => p.id == id);
         if (index !== -1) {
             productos[index] = new Producto(id, nombre, precio, stock, categoria);
         }
         btnGuardar.textContent = 'Guardar Producto';
     } else {
-        // Modo Creación
+        
         const nuevoId = productos.length > 0 ? Math.max(...productos.map(p => p.id)) + 1 : 101;
         const nuevoProducto = new Producto(nuevoId, nombre, precio, stock, categoria);
         productos.push(nuevoProducto);
@@ -81,7 +81,7 @@ form.addEventListener('submit', (e) => {
     renderizarProductos();
 });
 
-// Cargar producto en el formulario para editar
+
 window.prepararEdicion = function(id) {
     const prod = productos.find(p => p.id == id);
     if (prod) {
@@ -94,7 +94,7 @@ window.prepararEdicion = function(id) {
     }
 };
 
-// Eliminar producto
+
 window.eliminarProducto = function(id) {
     if (confirm('¿Estás seguro de eliminar este producto de NeoStore?')) {
         productos = productos.filter(p => p.id != id);
@@ -103,10 +103,29 @@ window.eliminarProducto = function(id) {
     }
 };
 
-// Guardar en LocalStorage
+
 function guardarEnLocalStorage() {
     localStorage.setItem('neostore_productos', JSON.stringify(productos));
 }
 
-// Inicializar la vista
+
 renderizarProductos();
+
+
+const inputBuscar = document.getElementById('input-buscar');
+
+if (inputBuscar) {
+    inputBuscar.addEventListener('input', (e) => {
+        const busqueda = e.target.value.toLowerCase();
+        const filas = listaProductos.querySelectorAll('tr');
+
+        filas.forEach(fila => {
+            const textoFila = fila.textContent.toLowerCase();
+            if (textoFila.includes(busqueda)) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        });
+    });
+}
