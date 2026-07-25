@@ -1,4 +1,4 @@
-// Modelo de Producto Tecnológico con manejo de estructura
+// Clase Producto
 class Producto {
     constructor(id, nombre, precio, stock, categoria) {
         this.id = id;
@@ -9,4 +9,104 @@ class Producto {
     }
 }
 
-console.log("Modelo 'Producto' cargado correctamente en NeoStore.");
+// Variables globales y selección de elementos del DOM
+let productos = JSON.parse(localStorage.getItem('neostore_productos')) || [];
+
+const form = document.getElementById('producto-form');
+const inputId = document.getElementById('producto-id');
+const inputNombre = document.getElementById('nombre');
+const inputPrecio = document.getElementById('precio');
+const inputStock = document.getElementById('stock');
+const selectCategoria = document.getElementById('categoria');
+const btnGuardar = document.getElementById('btn-guardar');
+const listaProductos = document.getElementById('lista-productos');
+
+// Renderizar la lista de productos en la tabla
+function renderizarProductos() {
+    listaProductos.innerHTML = '';
+
+    if (productos.length === 0) {
+        listaProductos.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align:center;">No hay productos registrados en NeoStore.</td>
+            </tr>
+        `;
+        return;
+    }
+
+    productos.forEach(prod => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>#${prod.id}</td>
+            <td><strong>${prod.nombre}</strong></td>
+            <td>$${prod.precio.toFixed(2)}</td>
+            <td>${prod.stock} unids.</td>
+            <td><span class="badge">${prod.categoria}</span></td>
+            <td>
+                <button onclick="prepararEdicion(${prod.id})" class="btn-action edit">Editar</button>
+                <button onclick="eliminarProducto(${prod.id})" class="btn-action delete">Eliminar</button>
+            </td>
+        `;
+        listaProductos.appendChild(tr);
+    });
+}
+
+// Guardar o Actualizar producto
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const id = inputId.value;
+    const nombre = inputNombre.value.trim();
+    const precio = inputPrecio.value;
+    const stock = inputStock.value;
+    const categoria = selectCategoria.value;
+
+    if (id) {
+        // Modo Edición
+        const index = productos.findIndex(p => p.id == id);
+        if (index !== -1) {
+            productos[index] = new Producto(id, nombre, precio, stock, categoria);
+        }
+        btnGuardar.textContent = 'Guardar Producto';
+    } else {
+        // Modo Creación
+        const nuevoId = productos.length > 0 ? Math.max(...productos.map(p => p.id)) + 1 : 101;
+        const nuevoProducto = new Producto(nuevoId, nombre, precio, stock, categoria);
+        productos.push(nuevoProducto);
+    }
+
+    guardarEnLocalStorage();
+    form.reset();
+    inputId.value = '';
+    renderizarProductos();
+});
+
+// Cargar producto en el formulario para editar
+window.prepararEdicion = function(id) {
+    const prod = productos.find(p => p.id == id);
+    if (prod) {
+        inputId.value = prod.id;
+        inputNombre.value = prod.nombre;
+        inputPrecio.value = prod.precio;
+        inputStock.value = prod.stock;
+        selectCategoria.value = prod.categoria;
+        btnGuardar.textContent = 'Actualizar Producto';
+    }
+};
+
+// Eliminar producto
+window.eliminarProducto = function(id) {
+    if (confirm('¿Estás seguro de eliminar este producto de NeoStore?')) {
+        productos = productos.filter(p => p.id != id);
+        guardarEnLocalStorage();
+        renderizarProductos();
+    }
+};
+
+// Guardar en LocalStorage
+function guardarEnLocalStorage() {
+    localStorage.setItem('neostore_productos', JSON.stringify(productos));
+}
+
+// Inicializar la vista
+renderizarProductos();
