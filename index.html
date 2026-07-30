@@ -14,7 +14,7 @@
         </header>
 
         <main>
-            <!-- Formulario de Registro -->
+           
             <section class="card">
                 <h2>Registrar Producto Tecnológico</h2>
                 <form id="producto-form">
@@ -51,35 +51,39 @@
                 </form>
             </section>
 
-            <!-- Tabla de Inventario -->
+           
             <section class="card margin-top">
                 <h2>Inventario de Productos</h2>
                 
-                <!-- BARRA DE BÚSQUEDA AGREGADA -->
+                
                 <div class="form-group" style="margin-bottom: 20px;">
                     <input type="text" id="input-buscar" placeholder="🔍 Buscar producto por nombre o categoría...">
                 </div>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Producto</th>
-                            <th>Precio</th>
-                            <th>Stock</th>
-                            <th>Categoría</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lista-productos">
-                        <tr>
-                            <td colspan="6" style="text-align:center;">Cargando inventario...</td>
-                        </tr>
-                    </tbody>
-                </table>
+                
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Categoría</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-productos">
+                            <tr>
+                                <td colspan="6" style="text-align:center;">Cargando inventario...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
         </main>
     </div>
     <script src="app.js"></script>
 </body>
 </html>
+
